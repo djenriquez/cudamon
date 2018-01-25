@@ -11,7 +11,7 @@ WORKDIR $APP_DIR
 
 COPY ./requirements.txt $APP_DIR
 
-RUN  pip install -r requirements.txt
+RUN  pip3 install -r requirements.txt
 
 COPY . $APP_DIR
 
