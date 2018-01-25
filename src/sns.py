@@ -3,8 +3,8 @@ import os
 
 class SNS:
     def __init__(self):
-        timeout = int(os.getenv('TIMEOUT', 10)) * 2
-        alerted = False
+        self.timeout = int(os.getenv('TIMEOUT', 10)) * 2
+        self.alerted = False
     
     def publish(self, message):
         client = boto3.client('sns', region_name=os.getenv('AWS_REGION', 'us-east-1'))
