@@ -5,8 +5,8 @@ from src import cudamon
 
 if __name__ == '__main__':
     print('Starting CUDAMon')
+    cudamon = cudamon.CUDAMon()
     while True:
-        cudamon = cudamon.CUDAMon()
         cudamon.check_gpu()
         time.sleep(int(os.getenv('POLL_SEC', 60)))
     
