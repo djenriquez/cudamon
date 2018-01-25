@@ -7,5 +7,5 @@ if __name__ == '__main__':
     while True:
         cudamon = cudamon.CUDAMon()
         cudamon.check_gpu()
-        time.sleep(os.getenv('POLL_SEC'), 60)
+        time.sleep(os.getenv('POLL_SEC', 60))
     
