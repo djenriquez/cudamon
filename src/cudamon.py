@@ -48,7 +48,7 @@ class CUDAMon:
             self.gpus.append(gpu_item)
 
     def _is_card_running(self):
-        if(self.sns.can_publish):
+        if(self.sns.can_publish()):
             all_running = True
             for gpu in self.gpus:
                 config_util = os.getenv('GPU_UTIL_{}'.format(gpu['card_arch']), 90)
@@ -58,7 +58,7 @@ class CUDAMon:
             return all_running
 
     def _is_card_temp_ok(self):
-        if(self.sns.can_publish):
+        if(self.sns.can_publish()):
             all_cool = True
             for gpu in self.gpus:
                 config_temp = os.getenv('GPU_TEMP_{}'.format(gpu['card_arch']), 75)

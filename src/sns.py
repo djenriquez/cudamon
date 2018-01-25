@@ -3,7 +3,7 @@ import os
 
 class SNS:
     def __init__(self):
-        timeout = int(os.getenv('TIMEOUT', 10))
+        timeout = int(os.getenv('TIMEOUT', 10)) * 2
         alerted = False
     
     def publish(self, message):
