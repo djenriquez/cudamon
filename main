@@ -4,6 +4,7 @@ import os
 from src import cudamon
 
 if __name__ == '__main__':
+    print('Starting CUDAMon')
     while True:
         cudamon = cudamon.CUDAMon()
         cudamon.check_gpu()
