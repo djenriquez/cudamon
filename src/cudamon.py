@@ -9,11 +9,14 @@ from src import sns
 class CUDAMon:
     def __init__(self):
         self.gpus = []
+        self.sns = sns.SNS()
 
     def check_gpu(self):
         self._get_nvidia_smi()
-        self._is_card_running()
-        self._is_card_temp_ok()
+        running = self._is_card_running()
+        cool = self._is_card_temp_ok()
+        if running and cool:
+            self.sns.alerted = False
 
     def _get_nvidia_smi(self):
         data = sp.check_output(['nvidia-smi', '-q', '-x'])
@@ -45,13 +48,19 @@ class CUDAMon:
             self.gpus.append(gpu_item)
 
     def _is_card_running(self):
+        all_running = True
         for gpu in self.gpus:
             config_util = os.getenv('GPU_UTIL_{}'.format(gpu['card_arch']), 90)
             if float(gpu['gpu_util']) < float(config_util):
-                sns.publish('GPU {} is running {}% utilization, needs {}%. Verify it is still running'.format(gpu['card'], gpu['gpu_util'], config_util))
+                self.sns.publish('GPU {} is running {}% utilization, needs {}%. Verify it is still running'.format(gpu['card'], gpu['gpu_util'], config_util))
+                all_running = False
+        return all_running
 
     def _is_card_temp_ok(self):
+        all_cool = True
         for gpu in self.gpus:
             config_temp = os.getenv('GPU_TEMP_{}'.format(gpu['card_arch']), 75)
             if float(gpu['temp']) > float(config_temp):
-                sns.publish('GPU {} is too hot, running {} {}, needs {} {}'.format(gpu['card'], gpu['temp'], gpu['temp_units'], config_temp, gpu['temp_units'] ))
+                self.sns.publish('GPU {} is too hot, running {} {}, needs {} {}'.format(gpu['card'], gpu['temp'], gpu['temp_units'], config_temp, gpu['temp_units'] ))
+                all_cool = False
+        return all_cool
