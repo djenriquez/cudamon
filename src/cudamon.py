@@ -52,7 +52,7 @@ class CUDAMon:
         for gpu in self.gpus:
             config_util = os.getenv('GPU_UTIL_{}'.format(gpu['card_arch']), 90)
             if float(gpu['gpu_util']) < float(config_util):
-                self.sns.publish('GPU {} is running {}% utilization, needs {}%. Verify it is still running'.format(gpu['card'], gpu['gpu_util'], config_util))
+                self.sns.publish('GPU {} is running {}% utilization, needs {}%. Verify it is still running.'.format(gpu['card'], gpu['gpu_util'], config_util))
                 all_running = False
         return all_running
 
@@ -61,6 +61,6 @@ class CUDAMon:
         for gpu in self.gpus:
             config_temp = os.getenv('GPU_TEMP_{}'.format(gpu['card_arch']), 75)
             if float(gpu['temp']) > float(config_temp):
-                self.sns.publish('GPU {} is too hot, running {} {}, needs {} {}'.format(gpu['card'], gpu['temp'], gpu['temp_units'], config_temp, gpu['temp_units'] ))
+                self.sns.publish('GPU {} is too hot, running {} {}, needs {} {}.'.format(gpu['card'], gpu['temp'], gpu['temp_units'], config_temp, gpu['temp_units'] ))
                 all_cool = False
         return all_cool
