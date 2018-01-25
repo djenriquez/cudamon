@@ -7,17 +7,16 @@ class SNS:
         alerted = False
     
     def publish(self, message):
-        if self._can_publish():
-            client = boto3.client('sns', region_name=os.getenv('AWS_REGION', 'us-east-1'))
-            response = client.publish(
-                TopicArn=os.getenv('SNS_TOPIC_ARN', ''),
-                Message=message,
-                Subject='Miner Alert',
-                MessageStructure='raw'
-            )
-            self.alerted = True
+        client = boto3.client('sns', region_name=os.getenv('AWS_REGION', 'us-east-1'))
+        response = client.publish(
+            TopicArn=os.getenv('SNS_TOPIC_ARN', ''),
+            Message=message,
+            Subject='Miner Alert',
+            MessageStructure='raw'
+        )
+        self.alerted = True
 
-    def _can_publish(self):
+    def can_publish(self):
         if self.alerted and self.timeout > 0:
             self.timeout -= 1
             return False
