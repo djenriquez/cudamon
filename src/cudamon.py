@@ -4,6 +4,7 @@ import subprocess as sp
 import xml.etree.ElementTree as ET
 import re
 import os
+import logging
 from src import sns
 
 class CUDAMon:
@@ -11,10 +12,18 @@ class CUDAMon:
         self.gpus = []
         self.sns = sns.SNS()
 
-    def check_gpu(self):
         self._get_nvidia_smi()
+        logging.info('Cards detected: ')
+        for gpu in self.gpus:
+            logging.info(gpu['card'])
+
+    def check_gpus(self):
+        logging.debug('Checking GPUs')
+        self._get_nvidia_smi()
+
         running = self._is_card_running()
         cool = self._is_card_temp_ok()
+
         if running and cool:
             self.sns.reset_alert()
         else:
@@ -43,13 +52,14 @@ class CUDAMon:
             card_arch = card_r.findall(gpu.find('product_name').text)[0]
 
             if 'ti' in card_arch.lower():
-                card_arch = '{}_{}'.format(decimal.findall(card)[0], "TI")
+                card_arch = '{}_{}'.format(decimal.findall(card)[0], 'TI')
 
-            gpu_item = { "bus": pcie_bus, "card": card, "card_arch": card_arch, "fan_speed": fan_speed, "gpu_util": gpu_util, "memory_util": memory_util, "temp": temp, "temp_units": "Celcius", "power": power, "power_units": "Watts"  }
+            gpu_item = { 'bus': pcie_bus, 'card': card, 'card_arch': card_arch, 'fan_speed': fan_speed, 'gpu_util': gpu_util, 'memory_util': memory_util, 'temp': temp, 'temp_units': 'Celcius', 'power': power, 'power_units': 'Watts'  }
 
             self.gpus.append(gpu_item)
 
     def _is_card_running(self):
+        logging.debug('Checking GPU utilzation')
         all_running = True
         for gpu in self.gpus:
             config_util = os.getenv('GPU_UTIL_{}'.format(gpu['card_arch']), 90)
@@ -59,6 +69,7 @@ class CUDAMon:
         return all_running
 
     def _is_card_temp_ok(self):
+        logging.debug('Checking GPU Temperatures')
         all_cool = True
         for gpu in self.gpus:
             config_temp = os.getenv('GPU_TEMP_{}'.format(gpu['card_arch']), 75)
