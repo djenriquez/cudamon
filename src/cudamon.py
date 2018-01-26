@@ -66,6 +66,10 @@ class CUDAMon:
             if float(gpu['gpu_util']) < float(config_util):
                 self.sns.publish('GPU {} is running {}% utilization, needs {}%. Verify it is still running.'.format(gpu['card'], gpu['gpu_util'], config_util))
                 all_running = False
+
+        if not all_running:
+            logging.info('Low GPU utilization detected')
+
         return all_running
 
     def _is_card_temp_ok(self):
@@ -76,4 +80,8 @@ class CUDAMon:
             if float(gpu['temp']) > float(config_temp):
                 self.sns.publish('GPU {} is too hot, running {} {}, needs {} {}.'.format(gpu['card'], gpu['temp'], gpu['temp_units'], config_temp, gpu['temp_units'] ))
                 all_cool = False
+
+        if not all_cool:
+            logging.info('High GPU temperature detected')
+            
         return all_cool
