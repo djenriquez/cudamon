@@ -62,7 +62,7 @@ class CUDAMon:
         logging.debug('Checking GPU utilzation')
         all_running = True
         for gpu in self.gpus:
-            config_util = os.getenv('GPU_UTIL_{}'.format(gpu['card_arch']), 90)
+            config_util = os.getenv('GPU_UTIL_{}'.format(gpu['card_arch']), 80)
             if float(gpu['gpu_util']) < float(config_util):
                 self.sns.publish('GPU {} is running {}% utilization, needs {}%. Verify it is still running.'.format(gpu['card'], gpu['gpu_util'], config_util))
                 all_running = False
