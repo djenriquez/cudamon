@@ -68,7 +68,7 @@ class CUDAMon:
                 all_running = False
 
         if not all_running:
-            logging.info('Low GPU utilization detected')
+            logging.warn('Low GPU utilization detected')
 
         return all_running
 
@@ -82,6 +82,6 @@ class CUDAMon:
                 all_cool = False
 
         if not all_cool:
-            logging.info('High GPU temperature detected')
-            
+            logging.warn('High GPU temperature detected')
+
         return all_cool
