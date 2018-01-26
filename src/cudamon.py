@@ -16,7 +16,9 @@ class CUDAMon:
         running = self._is_card_running()
         cool = self._is_card_temp_ok()
         if running and cool:
-            self.sns.alerted = False
+            self.sns.reset_alert()
+        else:
+            self.sns.alert()
 
     def _get_nvidia_smi(self):
         data = sp.check_output(['nvidia-smi', '-q', '-x'])
